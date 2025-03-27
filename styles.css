@@ -1,0 +1,88 @@
+body {
+    font-family: Inter, "Noto Sans", sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 900px;
+    background: #111518;
+    padding: 20px;
+    border-radius: 8px;
+    margin: auto;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+.add-btn {
+    background-color: #283139;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.add-btn:hover {
+    background-color: #3b4954;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    background: #1b2227;
+    border: 1px solid #3b4954;
+    border-radius: 5px;
+    color: white;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background: #111518;
+}
+
+th, td {
+    border: 1px solid #3b4954;
+    padding: 8px;
+    text-align: left;
+    color: #9cacba;
+}
+
+th {
+    background-color: #1b2227;
+    color: #9cacba;
+}
+
+tr:nth-child(even) {
+    background-color: #1b2227;
+}
+
+tr:hover {
+    background-color: #283139;
+}
+
+/* Added styles from inline */
+.root-container {
+    --select-button-svg: url('data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2724px%27 height=%2724px%27 fill=%27rgb(156,172,186)%27 viewBox=%270 0 256 256%27%3e%3cpath d=%27M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z%27%3e%3c/path%3e%3c/svg%3e');
+}
+
+/* Responsive container queries */
+@container (max-width:120px) {
+    .table-88605665-ecc2-4dcb-b688-5d32e7b1788b-column-120 { display: none; }
+}
+@container (max-width:240px) {
+    .table-88605665-ecc2-4dcb-b688-5d32e7b1788b-column-240 { display: none; }
+}
+@container (max-width:360px) {
+    .table-88605665-ecc2-4dcb-b688-5d32e7b1788b-column-360 { display: none; }
+}
+@container (max-width:480px) {
+    .table-88605665-ecc2-4dcb-b688-5d32e7b1788b-column-480 { display: none; }
+}
