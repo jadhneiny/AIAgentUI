@@ -16,7 +16,7 @@
   <body>
     <div class="relative flex size-full min-h-screen flex-col bg-[#111518] dark group/design-root overflow-x-hidden" style='font-family: Inter, "Noto Sans", sans-serif;'>
       <div class="layout-container flex h-full grow flex-col">
-        <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#283139] px-10 py-3">
+        <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#283139] px-6 py-2">
           <div class="flex items-center gap-4 text-white">
             <div class="size-4">
               <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -32,20 +32,20 @@
             <div class="flex items-center gap-9">
               <a class="text-white text-sm font-medium leading-normal" href="#">Overview</a>
               <a class="text-white text-sm font-medium leading-normal" href="#">Agents</a>
+                <a class="text-white text-sm font-medium leading-normal" href="data-dashboard.html">Data Analytics</a>
               <a class="text-white text-sm font-medium leading-normal" href="#">Documentation</a>
-              <a class="text-white text-sm font-medium leading-normal" href="#">API Access</a>
             </div>
             <div
               class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
-              style='background-image: url("https://cdn.usegalileo.ai/sdxl10/7601b698-f160-4ee3-9071-cdbb73461068.png");'
+              style='background-image: url("siren_analytics_logo.jpg");'
             ></div>
           </div>
         </header>
-        <div class="px-40 flex flex-1 justify-center py-5">
-          <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
-            <div class="flex flex-wrap justify-between gap-3 p-4">
-              <div class="flex min-w-72 flex-col gap-3">
-                <p class="text-white tracking-light text-[32px] font-bold leading-tight">AI Agents</p>
+        <div class="px-6 flex flex-1 justify-center py-4">
+          <div class="layout-content-container flex flex-col max-w-[1200px] flex-1">
+            <div class="flex flex-wrap justify-between gap-2 p-3">
+              <div class="flex min-w-72 flex-col gap-2">
+                <p class="text-white tracking-light text-[28px] font-bold leading-tight">AI Agents</p>
                 <p class="text-[#9cacba] text-sm font-normal leading-normal">
                   Manage and monitor AI agents designed for the Ministry of Interior and Municipalities in Lebanon. Control agent states and add new agents as needed.
                 </p>
@@ -57,7 +57,7 @@
               <span class="truncate">Add New Agent</span>
             </button>
             </div>
-            <div class="px-4 py-3 @container">
+            <div class="px-3 py-2 @container">
               <div class="flex overflow-hidden rounded-xl border border-[#3b4954] bg-[#111518]">
                 <table class="flex-1">
                   <thead>
@@ -69,7 +69,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr class="border-t border-t-[#3b4954] bg-[#1b2227]">
+                    <tr class="border-t border-t-[#3b4954] bg-[#1b2227] cursor-pointer" onclick="window.location.href='agent-overview.html'">
                       <td class="table-88605665-ecc2-4dcb-b688-5d32e7b1788b-column-120 h-[72px] px-4 py-2 w-[400px] text-white text-sm font-normal leading-normal">
                         Agent 1: Documentation assistant
                       </td>

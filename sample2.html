@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicles Violations Agent </title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f6f8;
+            padding: 0;
+            margin: 0;
+        }
+        nav {
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+            padding: 10px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .dashboard-container {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 15px;
+            gap: 15px;
+            justify-content: space-evenly;
+        }
+        .card {
+            background-color: white;
+            width: 300px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+            min-height: 250px;
+        }
+        .card h4 {
+            margin-top: 0;
+            font-size: 16px;
+            color: #333;
+        }
+        .contact {
+            font-size: 15px;
+            margin-bottom: 8px;
+            color: #007aff;
+        }
+        .analysis {
+            font-size: 13px;
+            color: #555;
+        }
+        .tag {
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: white;
+            font-size: 12px;
+            display: inline-block;
+            margin-top: 8px;
+        }
+        .positive {
+            background-color: #34c759;
+        }
+        .neutral {
+            background-color: #8e8e93;
+        }
+        .negative {
+            background-color: #ff3b30;
+        }
+        .intent {
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #444;
+        }
+        .view-link {
+            font-size: 13px;
+            text-decoration: none;
+            color: #007aff;
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h3>Vehicles Violations Agent | </h3>
+    </nav>
+
+    <div class="dashboard-container">
+
+        <!-- Example Card 1 -->
+        <div class="card">
+            <h4> Email Case</h4>
+            <div class="contact">user@example.com</div>
+            <div class="analysis">
+                Sentiment: <span class="tag positive">Positive 😊</span><br>
+                <div class="intent">Intent: General Inquiry</div>
+            </div>
+            <a class="view-link" href="#">View Conversation</a>
+        </div>
+
+        <!-- Example Card 2 -->
+        <div class="card">
+            <h4> WhatsApp Case</h4>
+            <div class="contact">+961 761233211</div>
+            <div class="analysis">
+                Sentiment: <span class="tag negative">Negative 😞</span><br>
+                <div class="intent">Intent: Complaint about violation</div>
+            </div>
+            <a class="view-link" href="#">View Conversation</a>
+        </div>
+
+        <!-- Example Card 3 -->
+        <div class="card">
+            <h4> Email Case</h4>
+            <div class="contact">anotheruser@mail.com</div>
+            <div class="analysis">
+                Sentiment: <span class="tag neutral">Neutral 😐</span><br>
+                <div class="intent">Intent: Request Information</div>
+            </div>
+            <a class="view-link" href="#">View Conversation</a>
+        </div>
+
+        <!-- Example Card 4 -->
+        <div class="card">
+            <h4> WhatsApp Case</h4>
+            <div class="contact">+961 761233221</div>
+            <div class="analysis">
+                Sentiment: <span class="tag positive">Positive 😊</span><br>
+                <div class="intent">Intent: Traffic Information</div>
+            </div>
+            <a class="view-link" href="#">View Conversation</a>
+        </div>
+
+        <!-- Example Card 5 -->
+        <div class="card">
+            <h4> Email Case</h4>
+            <div class="contact">customerhelp@domain.com</div>
+            <div class="analysis">
+                Sentiment: <span class="tag negative">Negative 😞</span><br>
+                <div class="intent">Intent: Vehicle Violation Dispute</div>
+            </div>
+            <a class="view-link" href="#">View Conversation</a>
+        </div>
+
+        <!-- Example Card 6 -->
+        <div class="card">
+            <h4> WhatsApp Case</h4>
+            <div class="contact">+961 71233221</div>
+            <div class="analysis">
+                Sentiment: <span class="tag neutral">Neutral 😐</span><br>
+                <div class="intent">Intent: Incident Reporting</div>
+            </div>
+            <a class="view-link" href="#">View Conversation</a>
+        </div>
+
+          <!-- Example Card 6 -->
+          <div class="card">
+            <h4> WhatsApp Case</h4>
+            <div class="contact">+961 761233221</div>
+            <div class="analysis">
+                Sentiment: <span class="tag neutral">Neutral 😐</span><br>
+                <div class="intent">Intent: Incident Reporting</div>
+            </div>
+            <a class="view-link" href="#">View Conversation</a>
+        </div>
+
+          <!-- Example Card 6 -->
+          <div class="card">
+            <h4> WhatsApp Case</h4>
+            <div class="contact">+961 762233221</div>
+            <div class="analysis">
+                Sentiment: <span class="tag neutral">Neutral 😐</span><br>
+                <div class="intent">Intent: Incident Reporting</div>
+            </div>
+            <a class="view-link" href="#">View Conversation</a>
+        </div>
+
+        <!-- You can replicate more cards similarly -->
+
+    </div>
+</body>
+</html>

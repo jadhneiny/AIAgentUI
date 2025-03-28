@@ -1,90 +1,167 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
-    <link
-      rel="stylesheet"
-      as="style"
-      onload="this.rel='stylesheet'"
-      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
-    />
-    <title>Galileo Design</title>
-    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
-    <link rel="stylesheet" href="styles.css" />
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  </head>
-  <body>
-    <div
-      class="relative flex size-full min-h-screen flex-col bg-[#111518] dark group/design-root overflow-x-hidden"
-      style="--select-button-svg: url('data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2724px%27 height=%2724px%27 fill=%27rgb(156,172,186)%27 viewBox=%270 0 256 256%27%3e%3cpath d=%27M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z%27%3e%3c/path%3e%3c/svg%3e'); font-family: Inter, &quot;Noto Sans&quot;, sans-serif;"
-    >
-      <div class="layout-container flex h-full grow flex-col">
-        <div class="px-40 flex flex-1 justify-center py-5">
-          <div class="layout-content-container flex flex-col w-[512px] max-w-[512px] py-5 max-w-[960px] flex-1">
-            <h1 class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 text-left pb-3 pt-5">Add New AI Agent</h1>
-            <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label class="flex flex-col min-w-40 flex-1">
-                <p class="text-white text-base font-medium leading-normal pb-2">Agent Name</p>
-                <input
-                  placeholder="Enter agent name"
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#3b4954] bg-[#1b2227] focus:border-[#3b4954] h-14 placeholder:text-[#9cacba] p-[15px] text-base font-normal leading-normal"
-                  value=""
-                />
-              </label>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Galileo Design</title>
+  <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+  <link rel="stylesheet" as="style" onload="this.rel='stylesheet'" href="https://fonts.googleapis.com/css2?display=swap&family=Inter:wght@400;500;700;900&family=Noto+Sans:wght@400;500;700;900" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="https://unpkg.com/@heroicons/web"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .profile-item i {
+      color: #fff;
+      width: 20px;
+      text-align: center;
+    }
+    .profile-item strong {
+      min-width: 110px;
+      display: inline-block;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body class="bg-[#111518] text-white" style="font-family: Inter, 'Noto Sans', sans-serif;">
+  <div class="relative flex min-h-screen flex-col overflow-x-hidden">
+    <div class="layout-container flex h-full grow flex-col">
+      <div class="px-10 md:px-40 flex flex-1 flex-col py-5">
+        <h1 class="text-[22px] font-bold leading-tight tracking-[-0.015em] text-left pb-3 pt-5">Agent Builder Interface</h1>
+
+        <div class="flex flex-col lg:flex-row gap-6">
+          <!-- Left Panel: Form Inputs -->
+          <form id="agentForm" class="space-y-2 w-full lg:w-1/2">
+            <div class="form-group py-3">
+              <label class="block text-base font-medium pb-2">Agent Name <span class="text-red-500">*</span></label>
+              <select id="agentName" required onchange="updateProfile()" class="form-input w-full rounded-xl bg-[#1b2227] border border-[#3b4954] h-14 px-4 text-white">
+                <option value="">Select</option>
+                <option>Ali</option>
+                <option>Roger</option>
+                <option>Rim</option>
+                <option>Omar</option>
+              </select>
             </div>
-            <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label class="flex flex-col min-w-40 flex-1">
-                <p class="text-white text-base font-medium leading-normal pb-2">Description</p>
-                <input
-                  placeholder="Describe the agent's function"
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#3b4954] bg-[#1b2227] focus:border-[#3b4954] h-14 placeholder:text-[#9cacba] p-[15px] text-base font-normal leading-normal"
-                  value=""
-                />
-              </label>
+
+            <div class="form-group py-3">
+              <label class="block text-base font-medium pb-2">Role / Function <span class="text-red-500">*</span></label>
+              <select id="role" required onchange="updateProfile()" class="form-input w-full rounded-xl bg-[#1b2227] border border-[#3b4954] h-14 px-4 text-white">
+                <option value="">Select</option>
+                <option>Monitor</option>
+                <option>Analyst</option>
+                <option>Coordinator</option>
+                <option>Auditor</option>
+                <option>Scheduler</option>
+              </select>
             </div>
-            <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label class="flex flex-col min-w-40 flex-1">
-                <p class="text-white text-base font-medium leading-normal pb-2">Department</p>
-                <select
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#3b4954] bg-[#1b2227] focus:border-[#3b4954] h-14 bg-[image:--select-button-svg] placeholder:text-[#9cacba] p-[15px] text-base font-normal leading-normal"
-                >
-                  <option value="one">Select department</option>
-                  <option value="two">two</option>
-                  <option value="three">three</option>
-                </select>
-              </label>
+
+            <div class="form-group py-3">
+              <label class="block text-base font-medium pb-2">Assigned Department <span class="text-red-500">*</span></label>
+              <select id="department" required onchange="updateProfile()" class="form-input w-full rounded-xl bg-[#1b2227] border border-[#3b4954] h-14 px-4 text-white">
+                <option value="">Select</option>
+                <option>Legal</option>
+                <option>Field Ops</option>
+                <option>Policy</option>
+              </select>
             </div>
-            <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label class="flex flex-col min-w-40 flex-1">
-                <p class="text-white text-base font-medium leading-normal pb-2">Scope</p>
-                <select
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#3b4954] bg-[#1b2227] focus:border-[#3b4954] h-14 bg-[image:--select-button-svg] placeholder:text-[#9cacba] p-[15px] text-base font-normal leading-normal"
-                >
-                  <option value="one">Select scope</option>
-                  <option value="two">two</option>
-                  <option value="three">three</option>
-                </select>
-              </label>
+
+            <div class="form-group py-3">
+              <label class="block text-base font-medium pb-2">Level of Autonomy <span class="text-red-500">*</span></label>
+              <select id="autonomy" required onchange="updateProfile()" class="form-input w-full rounded-xl bg-[#1b2227] border border-[#3b4954] h-14 px-4 text-white">
+                <option value="">Select</option>
+                <option>Full Autonomy</option>
+                <option>Approval Required</option>
+                <option>Manual Only</option>
+              </select>
             </div>
-            <div class="flex justify-stretch">
-              <div class="flex flex-1 gap-3 flex-wrap px-4 py-3 justify-end">
-                <button
-                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#283139] text-white text-sm font-bold leading-normal tracking-[0.015em]"
-                onclick="window.location.href='index.html'"
-              >
-                <span class="truncate">Cancel</span>
-              </button>
-                <button
-                  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#2094f3] text-white text-sm font-bold leading-normal tracking-[0.015em]"
-                >
-                  <span class="truncate">Save Agent</span>
+
+            <div class="form-group py-3">
+              <label class="block text-base font-medium pb-2">Interaction Mode</label>
+              <select id="interaction" onchange="updateProfile()" class="form-input w-full rounded-xl bg-[#1b2227] border border-[#3b4954] h-14 px-4 text-white">
+                <option value="">Select</option>
+                <option>Command & Control</option>
+                <option>Consultation</option>
+                <option>Synchronization</option>
+                <option>Relay</option>
+              </select>
+            </div>
+
+            <div class="form-group py-3">
+              <label class="block text-base font-medium pb-2">Tone & Style</label>
+              <select id="tone" onchange="updateProfile()" class="form-input w-full rounded-xl bg-[#1b2227] border border-[#3b4954] h-14 px-4 text-white">
+                <option value="">Select</option>
+                <option>Formal</option>
+                <option>Diplomatic</option>
+                <option>Assertive</option>
+                <option>Friendly</option>
+                <option>Technical</option>
+              </select>
+            </div>
+
+            <div class="form-group py-3">
+              <label class="block text-base font-medium pb-2">Mission Type</label>
+              <select id="mission" onchange="updateProfile()" class="form-input w-full rounded-xl bg-[#1b2227] border border-[#3b4954] h-14 px-4 text-white">
+                <option value="">Select</option>
+                <option>Action</option>
+                <option>Analysis</option>
+                <option>Hybrid</option>
+              </select>
+            </div>
+          </form>
+
+          <!-- Right Panel: Profile Summary -->
+          <div class="agent-profile w-full lg:w-1/2 border-2 border-dashed border-white rounded-xl p-5 h-fit sticky top-5">
+            <h2 class="text-xl font-bold mb-5 flex items-center gap-2"><i class="fas fa-id-card"></i> Agent Profile</h2>
+            <div class="profile-item mb-3"><i class="fas fa-user"></i><strong>Name:</strong> <span id="p_name">-</span></div>
+            <div class="profile-item mb-3"><i class="fas fa-briefcase"></i><strong>Role:</strong> <span id="p_role">-</span></div>
+            <div class="profile-item mb-3"><i class="fas fa-building"></i><strong>Department:</strong> <span id="p_department">-</span></div>
+            <div class="profile-item mb-3"><i class="fas fa-unlock-alt"></i><strong>Autonomy:</strong> <span id="p_autonomy">-</span></div>
+            <div class="profile-item mb-3"><i class="fas fa-hands-helping"></i><strong>Interaction:</strong> <span id="p_interaction">-</span></div>
+            <div class="profile-item mb-3"><i class="fas fa-comment-dots"></i><strong>Tone:</strong> <span id="p_tone">-</span></div>
+            <div class="profile-item mb-3"><i class="fas fa-bullseye"></i><strong>Mission:</strong> <span id="p_mission">-</span></div>
+            <div class="flex justify-between items-center gap-4 mt-6">
+              <a href="index.html" class="bg-gray-600 hover:bg-gray-700 text-white font-bold text-sm rounded-xl h-10 px-6 inline-flex items-center gap-2">
+                <i class="fas fa-arrow-left"></i> Back
+              </a>
+              <div class="flex gap-3">
+                <button onclick="createAgent()" class="bg-green-600 hover:bg-green-700 text-white font-bold text-sm rounded-xl h-10 px-6 inline-flex items-center gap-2">
+                  <i class="fas fa-plus"></i> Create Agent
                 </button>
+                <a href="agent-flow.html" class="bg-[#2094f3] hover:bg-[#1a7dd3] text-white font-bold text-sm rounded-xl h-10 px-6 inline-flex items-center gap-2">
+                  <i class="fas fa-diagram-project"></i> View Flow
+                </a>
               </div>
             </div>
           </div>
         </div>
+
       </div>
     </div>
-  </body>
-  <script src="script.js"></script>
+  </div>
+
+  <script>
+    function updateProfile() {
+      document.getElementById("p_name").textContent = document.getElementById("agentName").value || "-";
+      document.getElementById("p_role").textContent = document.getElementById("role").value || "-";
+      document.getElementById("p_department").textContent = document.getElementById("department").value || "-";
+      document.getElementById("p_autonomy").textContent = document.getElementById("autonomy").value || "-";
+      document.getElementById("p_interaction").textContent = document.getElementById("interaction").value || "-";
+      document.getElementById("p_tone").textContent = document.getElementById("tone").value || "-";
+      document.getElementById("p_mission").textContent = document.getElementById("mission").value || "-";
+    }
+
+    function createAgent() {
+      // Validate required fields
+      const form = document.getElementById('agentForm');
+      if (!form.checkValidity()) {
+        alert('Please fill in all required fields');
+        return;
+      }
+
+      // Here you would typically send the data to your backend
+      alert('Agent created successfully!');
+      // Optional: redirect to the flow page
+      window.location.href = 'agent-flow.html';
+    }
+  </script>
+</body>
 </html>

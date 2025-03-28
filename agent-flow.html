@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Agent Flow</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+  <link rel="stylesheet" as="style" onload="this.rel='stylesheet'" href="https://fonts.googleapis.com/css2?display=swap&family=Inter:wght@400;500;700;900&family=Noto+Sans:wght@400;500;700;900" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="https://unpkg.com/@heroicons/web"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .node {
+      cursor: move;
+      position: relative;
+      min-width: 200px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      z-index: 1;
+    }
+    .node-container {
+      min-height: 500px;
+      position: relative;
+      overflow: hidden;
+    }
+    .connection {
+      position: absolute;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .delete-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+    .delete-btn:hover {
+      opacity: 1;
+    }
+    .node.dragging {
+      opacity: 0.5;
+    }
+    .connection-point {
+      width: 12px;
+      height: 12px;
+      background: #2094f3;
+      border-radius: 50%;
+      position: absolute;
+      cursor: crosshair;
+      border: 2px solid #1b2227;
+      z-index: 10;
+    }
+    .connection-point.input {
+      top: 50%;
+      left: -6px;
+      transform: translateY(-50%);
+    }
+    .connection-point.output {
+      top: 50%;
+      right: -6px;
+      transform: translateY(-50%);
+    }
+    .connection-line {
+      stroke: #2094f3;
+      stroke-width: 2;
+      pointer-events: none;
+      fill: none;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+    }
+    .modal-content {
+      background: #1b2227;
+      border: 1px solid #3b4954;
+      border-radius: 12px;
+      max-width: 500px;
+      margin: 100px auto;
+      padding: 20px;
+    }
+    #connections {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body class="bg-[#111518] text-white min-h-screen py-10 px-5 md:px-20" style="font-family: Inter, 'Noto Sans', sans-serif;">
+  <h2 class="text-3xl font-bold text-center mb-8 flex items-center justify-center gap-3">
+    <i class="fas fa-diagram-project text-[#2094f3]"></i> Agent Flow Builder
+  </h2>
+
+  <div class="flex gap-8">
+    <!-- Sidebar with available nodes -->
+    <div class="w-64 bg-[#1b2227] border border-[#3b4954] rounded-xl p-4">
+      <h3 class="text-lg font-bold mb-4">Available Nodes</h3>
+      <div class="space-y-4">
+        <div class="bg-[#2b343b] p-4 rounded-lg cursor-move" draggable="true" data-node-type="start">
+          <i class="fas fa-play text-[#2094f3] mb-2"></i>
+          <span class="block">Start</span>
+        </div>
+        <div class="bg-[#2b343b] p-4 rounded-lg cursor-move" draggable="true" data-node-type="wait">
+          <i class="fas fa-clock text-[#2094f3] mb-2"></i>
+          <span class="block">Wait</span>
+        </div>
+        <div class="bg-[#2b343b] p-4 rounded-lg cursor-move" draggable="true" data-node-type="message">
+          <i class="fas fa-comment-dots text-[#2094f3] mb-2"></i>
+          <span class="block">Message</span>
+        </div>
+        <div class="bg-[#2b343b] p-4 rounded-lg cursor-move" draggable="true" data-node-type="action">
+          <i class="fas fa-bolt text-[#2094f3] mb-2"></i>
+          <span class="block">Action</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main canvas area -->
+    <div class="flex-1 bg-[#1b2227] border border-[#3b4954] rounded-xl p-8">
+      <div id="canvas" class="node-container relative">
+        <svg id="connections"></svg>
+        <!-- Nodes will be added here dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center mt-8">
+    <a href="index.html" class="bg-[#2094f3] hover:bg-[#1a7dd3] text-white font-bold text-sm rounded-xl h-10 px-6 inline-flex items-center gap-2">
+      <i class="fas fa-arrow-left"></i> Back to Builder
+    </a>
+  </div>
+
+  <!-- Configuration Modal -->
+  <div id="configModal" class="modal">
+    <div class="modal-content">
+      <h3 class="text-xl font-bold mb-4">Node Configuration</h3>
+      <div id="configFields" class="space-y-4">
+        <!-- Fields will be added dynamically -->
+      </div>
+      <div class="flex justify-end gap-3 mt-6">
+        <button id="cancelConfig" class="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-700">Cancel</button>
+        <button id="saveConfig" class="px-4 py-2 rounded-lg bg-[#2094f3] hover:bg-[#1a7dd3]">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const canvas = document.getElementById('canvas');
+      let draggedNode = null;
+      let connections = [];
+      let selectedPoint = null;
+      const svg = document.getElementById('connections');
+      const modal = document.getElementById('configModal');
+      const configFields = document.getElementById('configFields');
+
+      // Handle draggable nodes from sidebar
+      document.querySelectorAll('[draggable="true"]').forEach(node => {
+        node.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', e.target.dataset.nodeType);
+          draggedNode = e.target;
+          e.target.classList.add('dragging');
+        });
+
+        node.addEventListener('dragend', (e) => {
+          e.target.classList.remove('dragging');
+        });
+      });
+
+      // Handle canvas drop zone
+      canvas.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+      });
+
+      canvas.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const nodeType = e.dataTransfer.getData('text/plain');
+        const canvasRect = canvas.getBoundingClientRect();
+        const x = e.clientX - canvasRect.left;
+        const y = e.clientY - canvasRect.top;
+
+        if (nodeType) {
+          createNode(nodeType, x, y);
+        }
+      });
+
+      function createNode(type, x, y) {
+        const node = document.createElement('div');
+        node.className = 'node absolute bg-[#2b343b] rounded-lg';
+        node.style.left = `${x}px`;
+        node.style.top = `${y}px`;
+        node.dataset.nodeType = type;
+        node.dataset.config = JSON.stringify(getDefaultConfig(type));
+        
+        // Create node content
+        const content = `
+          <span class="delete-btn text-red-500"><i class="fas fa-times"></i></span>
+          <i class="fas fa-${getIconForType(type)} text-[#2094f3] text-xl"></i>
+          <span class="text-center font-medium">${type.charAt(0).toUpperCase() + type.slice(1)}</span>
+          <div class="connection-point input" data-type="input"></div>
+          <div class="connection-point output" data-type="output"></div>
+          <span class="absolute top-3 right-8 cursor-pointer text-[#2094f3]">
+            <i class="fas fa-cog"></i>
+          </span>
+        `;
+        
+        node.innerHTML = content;
+
+        // Add event listeners
+        node.querySelector('.delete-btn').onclick = () => deleteNode(node);
+
+        node.querySelector('.fa-cog').parentElement.onclick = () => showConfig(node);
+
+        // Make node draggable
+        node.draggable = true;
+        node.addEventListener('dragstart', (e) => {
+          e.stopPropagation();
+          draggedNode = node;
+          node.classList.add('dragging');
+        });
+
+        node.addEventListener('dragend', handleNodeDrop);
+
+        // Add connection handling
+        addConnectionHandlers(node);
+
+        canvas.appendChild(node);
+        return node;
+      }
+
+      function getIconForType(type) {
+        const icons = {
+          start: 'play',
+          wait: 'clock',
+          message: 'comment-dots',
+          action: 'bolt'
+        };
+        return icons[type] || 'circle';
+      }
+
+      function getDefaultConfig(type) {
+        const configs = {
+          wait: { delay: 5 },
+          message: { text: 'Enter message' },
+          action: { actionType: 'forward' },
+          start: {}
+        };
+        return configs[type] || {};
+      }
+
+      function showConfig(node) {
+        const config = JSON.parse(node.dataset.config);
+        configFields.innerHTML = '';
+        
+        Object.entries(config).forEach(([key, value]) => {
+          const field = document.createElement('div');
+          field.innerHTML = `
+            <label class="block text-sm mb-1">${key}</label>
+            <input type="text" value="${value}" 
+              class="w-full bg-[#2b343b] border border-[#3b4954] rounded-lg px-3 py-2"
+              data-key="${key}">
+          `;
+          configFields.appendChild(field);
+        });
+
+        modal.style.display = 'block';
+        
+        document.getElementById('saveConfig').onclick = () => {
+          const newConfig = {};
+          configFields.querySelectorAll('input').forEach(input => {
+            newConfig[input.dataset.key] = input.value;
+          });
+          node.dataset.config = JSON.stringify(newConfig);
+          modal.style.display = 'none';
+        };
+
+        document.getElementById('cancelConfig').onclick = () => {
+          modal.style.display = 'none';
+        };
+      }
+
+      document.addEventListener('mousemove', (e) => {
+        if (selectedPoint) {
+          drawTempConnection(e);
+        }
+      });
+
+      document.addEventListener('mouseup', (e) => {
+        if (!selectedPoint) return;
+
+        // Find the closest connection point
+        const elements = document.elementsFromPoint(e.clientX, e.clientY);
+        const targetPoint = elements.find(el => 
+            el.classList.contains('connection-point') && 
+            el !== selectedPoint.element
+        );
+
+        if (targetPoint && targetPoint.dataset.type !== selectedPoint.element.dataset.type) {
+            createConnection(selectedPoint.element, targetPoint);
+        }
+        
+        selectedPoint = null;
+        updateConnections();
+      });
+
+      function createConnection(start, end) {
+        if (!start || !end || start === end) return;
+        
+        const startType = start.dataset.type;
+        const endType = end.dataset.type;
+        
+        // Validate connection types
+        if ((startType === 'output' && endType === 'input') ||
+            (startType === 'input' && endType === 'output')) {
+            
+            // Normalize connection direction (always output -> input)
+            const outputPoint = startType === 'output' ? start : end;
+            const inputPoint = startType === 'input' ? start : end;
+            
+            // Only remove existing connection to the input point
+            connections = connections.filter(conn => conn.end !== inputPoint);
+            
+            // Add new connection
+            connections.push({
+                start: outputPoint,
+                end: inputPoint
+            });
+            
+            // Reset points style
+            start.style.backgroundColor = '#2094f3';
+            end.style.backgroundColor = '#2094f3';
+        }
+        
+        updateConnections();
+      }
+
+      function addConnectionHandlers(node) {
+        node.querySelectorAll('.connection-point').forEach(point => {
+            // Use mousedown instead of click for better control
+            point.addEventListener('mousedown', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                
+                if (selectedPoint) {
+                    // If we already have a selected point, try to complete the connection
+                    if (point !== selectedPoint.element && 
+                        point.dataset.type !== selectedPoint.element.dataset.type) {
+                        createConnection(selectedPoint.element, point);
+                    }
+                    // Reset previous point
+                    selectedPoint.element.style.backgroundColor = '#2094f3';
+                    selectedPoint = null;
+                } else {
+                    // Start new connection
+                    selectedPoint = {
+                        element: point,
+                        node: node,
+                        type: point.dataset.type
+                    };
+                    point.style.backgroundColor = '#ff9f1c';
+                }
+                updateConnections();
+            });
+
+            // Add hover effect
+            point.addEventListener('mouseover', () => {
+                if (selectedPoint && point !== selectedPoint.element && 
+                    point.dataset.type !== selectedPoint.element.dataset.type) {
+                    point.style.backgroundColor = '#50C878';
+                }
+            });
+
+            point.addEventListener('mouseout', () => {
+                if (!selectedPoint || point !== selectedPoint.element) {
+                    point.style.backgroundColor = '#2094f3';
+                }
+            });
+        });
+      }
+
+      function updateConnections() {
+        svg.innerHTML = '';
+        const canvasRect = canvas.getBoundingClientRect();
+        
+        connections.forEach(conn => {
+            const startNode = conn.start.closest('.node');
+            const endNode = conn.end.closest('.node');
+            
+            if (!startNode || !endNode) return; // Skip if nodes don't exist
+
+            // Calculate connection points
+            const startRect = conn.start.getBoundingClientRect();
+            const endRect = conn.end.getBoundingClientRect();
+
+            // Adjust points to the connection points instead of node centers
+            const startX = startRect.left - canvasRect.left + (conn.start.dataset.type === 'output' ? conn.start.offsetWidth : 0);
+            const startY = startRect.top - canvasRect.top + (conn.start.offsetHeight / 2);
+            const endX = endRect.left - canvasRect.left + (conn.end.dataset.type === 'input' ? 0 : conn.end.offsetWidth);
+            const endY = endRect.top - canvasRect.top + (conn.end.offsetHeight / 2);
+
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            
+            // Calculate control points for smoother curve
+            const dx = Math.abs(endX - startX) * 0.5;
+            const d = `M ${startX} ${startY} 
+                      C ${startX + dx} ${startY},
+                        ${endX - dx} ${endY},
+                        ${endX} ${endY}`;
+
+            path.setAttribute('d', d);
+            path.setAttribute('class', 'connection-line');
+            
+            svg.appendChild(path);
+        });
+      }
+
+      function drawTempConnection(e) {
+        if (!selectedPoint) return;
+        
+        // First draw all existing connections
+        updateConnections();
+        
+        // Then draw the temporary connection
+        const canvasRect = canvas.getBoundingClientRect();
+        const startNode = selectedPoint.element.closest('.node');
+        const startRect = startNode.getBoundingClientRect();
+
+        const startX = selectedPoint.type === 'output' 
+            ? startRect.left - canvasRect.left + startRect.width 
+            : startRect.left - canvasRect.left;
+        const startY = startRect.top - canvasRect.top + (startRect.height / 2);
+        const endX = e.clientX - canvasRect.left;
+        const endY = e.clientY - canvasRect.top;
+
+        const dx = Math.abs(endX - startX) * 0.5;
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        
+        const d = `M ${startX} ${startY} 
+                  C ${startX + dx} ${startY},
+                    ${endX - dx} ${endY},
+                    ${endX} ${endY}`;
+
+        path.setAttribute('d', d);
+        path.setAttribute('class', 'connection-line');
+        path.setAttribute('fill', 'none');
+        path.style.stroke = '#50C878'; // Temporary connection color
+        
+        svg.appendChild(path);
+      }
+
+      // Update connections when nodes are moved
+      function handleNodeDrop(e) {
+        e.target.classList.remove('dragging');
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        e.target.style.left = `${x}px`;
+        e.target.style.top = `${y}px`;
+        updateConnections();
+      }
+
+      // Add window resize handler to update connections
+      window.addEventListener('resize', () => {
+        requestAnimationFrame(updateConnections);
+      });
+
+      // Update node deletion to properly clean up connections
+      function deleteNode(node) {
+        connections = connections.filter(conn => 
+          !conn.start.closest('.node').isSameNode(node) && 
+          !conn.end.closest('.node').isSameNode(node)
+        );
+        node.remove();
+        updateConnections();
+      }
+
+      // Add canvas click handler to cancel connection
+      canvas.addEventListener('click', (e) => {
+        if (selectedPoint && !e.target.classList.contains('connection-point')) {
+            selectedPoint.element.style.backgroundColor = '#2094f3';
+            selectedPoint = null;
+            updateConnections();
+        }
+      });
+
+      // Add this new function to handle connection cancellation
+      function cancelConnection() {
+        if (selectedPoint) {
+            selectedPoint.element.style.backgroundColor = '#2094f3';
+            selectedPoint = null;
+            updateConnections();
+        }
+      }
+
+      // Update canvas click handler
+      canvas.addEventListener('click', (e) => {
+        if (!e.target.classList.contains('connection-point')) {
+            cancelConnection();
+        }
+      });
+
+      // Add escape key handler to cancel connection
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            cancelConnection();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
