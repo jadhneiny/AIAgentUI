@@ -430,10 +430,7 @@
       function drawTempConnection(e) {
         if (!selectedPoint) return;
         
-        // First draw all existing connections
-        updateConnections();
-        
-        // Then draw the temporary connection
+        svg.innerHTML = '';
         const canvasRect = canvas.getBoundingClientRect();
         const startNode = selectedPoint.element.closest('.node');
         const startRect = startNode.getBoundingClientRect();
